@@ -69,4 +69,13 @@ public class RecursoController {
         }
         return ResponseEntity.ok(recursos);
     }
+
+    @GetMapping("/catalogo/{catalogoId}")
+    public ResponseEntity<List<Recurso>> listarRecursosPorCategoriaId(@PathVariable("catalogoId") int id) {
+        List<Recurso> recursos = recService.byCatalogoId(id);
+        if (recursos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(recursos);
+    }
 }

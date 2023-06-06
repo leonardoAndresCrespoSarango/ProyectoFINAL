@@ -2,6 +2,7 @@ package com.Catalogo.Catalogo.Controller;
 
 import com.Catalogo.Catalogo.Entity.Catalogo;
 import com.Catalogo.Catalogo.Service.CatalogoService;
+import com.Catalogo.Catalogo.modelo.Recurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,5 +62,11 @@ public class CatalogoController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    ///metodo microservicios
+    @GetMapping("/recursos/{catalogoId}")
+    public ResponseEntity<List<Recurso>> obtenerRecursosUsuario(@PathVariable("catalogoId") int catalogoId) {
+        List<Recurso> recursos = catService.getRecursos(catalogoId);
+        return ResponseEntity.ok(recursos);
     }
 }

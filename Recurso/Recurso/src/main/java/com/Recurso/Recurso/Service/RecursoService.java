@@ -65,4 +65,13 @@ public class RecursoService {
                 .getResultList();
     }
 
+    public List<Recurso> byCatalogoId(int catalogoId) {
+        String jpql = "SELECT c FROM Recurso c WHERE c.catalogoId = :catalogoId";
+        return entityManager.createQuery(jpql, Recurso.class)
+                .setParameter("catalogoId", catalogoId)
+                .getResultList();
+    }
+
+
+
 }

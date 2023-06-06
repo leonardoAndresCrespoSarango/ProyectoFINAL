@@ -1,6 +1,10 @@
 package com.Catalogo.Catalogo.Service;
 
 import com.Catalogo.Catalogo.Entity.Catalogo;
+import com.Catalogo.Catalogo.modelo.Recurso;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -75,6 +79,18 @@ public class CatalogoService {
             return titulos.get(0);
         }
         return null;
+    }
+    ///AQUI EMPIEZA EL ENLACE DE MICROSERVICIOS
+    public List<Recurso> getRecursos(int catalogoId) {
+        String url = "http://localhost:8003/recursos/catalogo/" + catalogoId;
+        ResponseEntity<List<Recurso>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Recurso>>() {}
+        );
+        List<Recurso> recursos = response.getBody();
+        return recursos;
     }
 
 }
