@@ -4,27 +4,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Column;
+
 
 @Entity
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String nombre;
     private String apellido;
     private String email;
     private String telefono;
+    @Column(unique = true)
+    private String usu;
 
-    public int getCatalogoId() {
-        return catalogoId;
-    }
-
-    public void setCatalogoId(int catalogoId) {
-        this.catalogoId = catalogoId;
-    }
-
-    private int catalogoId;
+    private String contrasenia;
 
     public int getId() {
         return id;
@@ -64,5 +59,21 @@ public class Usuario {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getUsu() {
+        return usu;
+    }
+
+    public void setUsu(String usu) {
+        this.usu = usu;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 }

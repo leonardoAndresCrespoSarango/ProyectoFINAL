@@ -3,6 +3,7 @@ package com.Usuario.Usuario.Controller;
 import com.Usuario.Usuario.Entity.Usuario;
 
 import com.Usuario.Usuario.Service.UsuarioService;
+import com.Usuario.Usuario.modelo.Recurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/crear")
-    public void crearCatalogo(@RequestBody Usuario usuario) {
-        usuService.insertarCatalogo(usuario);
+    public ResponseEntity<String> crearCatalogo(@RequestBody Usuario usuario) {
+        try {
+            usuService.insertarCatalogo(usuario);
+            return ResponseEntity.ok("Usuario creado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("No se pudo crear el usuario: " + e.getMessage());
+        }
     }
 
     @PutMapping("/actualizar/{id}")
@@ -56,4 +62,14 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    ////AQUI VAN LOS ENLACES DE MICROSERVICIOS
+    @GetMapping("/recursos/{usuarioId}")
+    public ResponseEntity<List<Recurso>> obtenerRecursosUsuario(@PathVariable("usuarioId") int usuarioId) {
+        List<Recurso> recursos = usuService.getRecursos(usuarioId);
+        return ResponseEntity.ok(recursos);
+    }
+
+
+
 }

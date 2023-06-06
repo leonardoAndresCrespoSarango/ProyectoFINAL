@@ -11,25 +11,8 @@ public class Recurso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String detalle;
+    private int usuarioId;
     private int catalogoId;
-
-
-
-    public int getCatalogoId() {
-        return catalogoId;
-    }
-
-    public void setCatalogoId(int catalogoId) {
-        this.catalogoId = catalogoId;
-    }
-
-
-
-
-    public Recurso() {
-        super();
-    }
 
     public int getId() {
         return id;
@@ -39,11 +22,24 @@ public class Recurso {
         this.id = id;
     }
 
-    public String getDetalle() {
-        return detalle;
+    public int getUsuarioId() {
+        return usuarioId;
     }
 
-    public void setDetalle(String detalle) {
-        this.detalle = detalle;
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
     }
+
+    public int getCatalogoId() {
+        return catalogoId;
+    }
+
+    public void setCatalogoId(int catalogoId) {
+        this.catalogoId = catalogoId;
+    }
+
+    public Recurso() {
+        super();
+    }
+
 }

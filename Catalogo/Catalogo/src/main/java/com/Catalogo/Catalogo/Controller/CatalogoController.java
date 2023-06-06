@@ -25,9 +25,17 @@ public class CatalogoController {
     }
 
     @PostMapping("/crear")
-    public void crearCatalogo(@RequestBody Catalogo catalogo) {
-        catService.insertarCatalogo(catalogo);
+    public ResponseEntity<String> crearCatalogo(@RequestBody Catalogo catalogo) {
+        try {
+            catService.insertarCatalogo(catalogo);
+            return ResponseEntity.ok("catalogo creado exitosamente");
+
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().body("No se pudo crear el catalogo: " + e.getMessage());
+
+        }
     }
+
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<String> actualizarCatalogo(@PathVariable("id") int id, @RequestBody Catalogo catalogoActualizado) {

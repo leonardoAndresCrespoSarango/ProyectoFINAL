@@ -1,6 +1,10 @@
 package com.Usuario.Usuario.Service;
 
 import com.Usuario.Usuario.Entity.Usuario;
+import com.Usuario.Usuario.modelo.Recurso;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,12 +19,8 @@ import java.util.List;
 public class UsuarioService {
     private final RestTemplate restTemplate;
 
-
-
     @PersistenceContext
     private EntityManager entityManager;
-
-
 
     public UsuarioService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -35,10 +35,12 @@ public class UsuarioService {
     }
 
     public void insertarCatalogo(Usuario usuario) {
-        entityManager.persist(usuario);
-
-
-
+        Usuario usuarioExistente = buscarPorUsuario(usuario.getUsu());
+        if (usuarioExistente == null) {
+            entityManager.persist(usuario);
+        } else {
+            throw new RuntimeException("El usuario ya existe");
+        }
     }
 
     public Usuario actualizarUsuario(int id, Usuario usuarioActualizado) {
@@ -48,6 +50,8 @@ public class UsuarioService {
             usuarioExistente.setApellido(usuarioActualizado.getApellido());
             usuarioExistente.setEmail(usuarioActualizado.getEmail());
             usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+            usuarioExistente.setUsu(usuarioActualizado.getUsu());
+            usuarioExistente.setContrasenia(usuarioActualizado.getContrasenia());
             entityManager.merge(usuarioExistente);
         }
         return usuarioExistente;
@@ -62,6 +66,29 @@ public class UsuarioService {
 
     public Usuario buscarPorId(int id) {
         return entityManager.find(Usuario.class, id);
+    }
+
+    public Usuario buscarPorUsuario(String usu) {
+        String jpql = "SELECT u FROM Usuario u WHERE u.usu = :usu";
+        Query query = entityManager.createQuery(jpql, Usuario.class);
+        query.setParameter("usu", usu);
+        List<Usuario> usuarios = query.getResultList();
+        if (!usuarios.isEmpty()) {
+            return usuarios.get(0);
+        }
+        return null;
+    }
+    //////////AQUI VAN LOS SERVICIOS QUE ENLAZAN LOS MICROSERVICIOS
+    public List<Recurso> getRecursos(int usuarioId) {
+        String url = "http://localhost:8003/recursos/usuario/" + usuarioId;
+        ResponseEntity<List<Recurso>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Recurso>>() {}
+        );
+        List<Recurso> recursos = response.getBody();
+        return recursos;
     }
 
 }

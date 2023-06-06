@@ -8,10 +8,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import javax.transaction.Transactional;
 
 @Service
-
-
+@Transactional
 public class CatalogoService {
     private final RestTemplate restTemplate;
     @PersistenceContext
@@ -35,14 +35,21 @@ public class CatalogoService {
     }
 
     public void insertarCatalogo(Catalogo catalogo) {
-        entityManager.persist(catalogo);
+        Catalogo catalogoExistente = buscarPorTtitulo(catalogo.getTitulo());
+        if (catalogoExistente == null) {
+            entityManager.persist(catalogo);
+        } else {
+            throw new RuntimeException("El Catalogo ya existe");
+        }
     }
 
     public Catalogo actualizarCatalogo(int id, Catalogo catalogoActualizado) {
         Catalogo catalogoExistente = entityManager.find(Catalogo.class, id);
         if (catalogoExistente != null) {
-            catalogoExistente.setNombre(catalogoActualizado.getNombre());
-            catalogoExistente.setDescripccion(catalogoActualizado.getDescripccion());
+            catalogoExistente.setTitulo(catalogoActualizado.getTitulo());
+            catalogoExistente.setDescripcion(catalogoActualizado.getDescripcion());
+            catalogoExistente.setUrl(catalogoActualizado.getUrl());
+            catalogoExistente.setPrecio(catalogoActualizado.getPrecio());
 
             entityManager.merge(catalogoExistente);
         }
@@ -55,8 +62,19 @@ public class CatalogoService {
             entityManager.remove(catalogoExistente);
         }
     }
-
     public Catalogo buscarPorId(int id) {
         return entityManager.find(Catalogo.class, id);
     }
+
+    public Catalogo buscarPorTtitulo(String titulo) {
+        String jpql = "SELECT u FROM Catalogo u WHERE u.titulo = :titulo";
+        Query query = entityManager.createQuery(jpql, Catalogo.class);
+        query.setParameter("titulo", titulo);
+        List<Catalogo> titulos = query.getResultList();
+        if (!titulos.isEmpty()) {
+            return titulos.get(0);
+        }
+        return null;
+    }
+
 }

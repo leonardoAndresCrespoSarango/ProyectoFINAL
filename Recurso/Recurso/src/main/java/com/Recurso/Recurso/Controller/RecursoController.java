@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 @RestController
-@RequestMapping("/registro")
+@RequestMapping("/recursos")
 public class RecursoController {
     private RecursoService recService;
     @Autowired
@@ -58,5 +58,15 @@ public class RecursoController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /////METODOS PARA CONECTAR CON LOS MICROSERVICIOS
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<Recurso>> listarRecursosPorUsuarioId(@PathVariable("usuarioId") int id) {
+        List<Recurso> recursos = recService.byUsuarioId(id);
+        if (recursos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(recursos);
     }
 }
