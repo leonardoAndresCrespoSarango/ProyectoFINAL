@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -64,6 +65,7 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @GetMapping("/usu/{usu}")
     public ResponseEntity<Usuario> buscarUsu(@PathVariable("usu") String usu) {
         Usuario usuarioEncontrado = usuService.buscarPorUsuario(usu);
@@ -73,6 +75,17 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/usu/{usu}/contrasenia/{contrasenia}")
+    public ResponseEntity<Usuario> buscarUsu(@PathVariable("usu") String usu, @PathVariable("contrasenia") String contrasenia) {
+        Usuario usuarioEncontrado = usuService.buscarPorUsuarioYContrasenia(usu, contrasenia);
+        if (usuarioEncontrado != null) {
+            return ResponseEntity.ok(usuarioEncontrado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
     @GetMapping("/recursos/{usuarioId}")
     public ResponseEntity<List<Recurso>> obtenerRecursosUsuario(@PathVariable("usuarioId") int usuarioId) {

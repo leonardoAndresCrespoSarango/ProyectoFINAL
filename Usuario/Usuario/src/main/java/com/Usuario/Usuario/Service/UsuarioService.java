@@ -85,6 +85,19 @@ public class UsuarioService {
         }
         return null;
     }
+
+    public Usuario buscarPorUsuarioYContrasenia(String usu, String contrasenia) {
+        String jpql = "SELECT u FROM Usuario u WHERE u.usu = :usu AND u.contrasenia = :contrasenia";
+        Query query = entityManager.createQuery(jpql, Usuario.class);
+        query.setParameter("usu", usu);
+        query.setParameter("contrasenia", contrasenia);
+        List<Usuario> usuarios = query.getResultList();
+        if (!usuarios.isEmpty()) {
+            return usuarios.get(0);
+        }
+        return null;
+    }
+
     //////////AQUI VAN LOS SERVICIOS QUE ENLAZAN LOS MICROSERVICIOS
     public List<Recurso> getRecursos(int usuarioId) {
         String url = "http://localhost:8003/recursos/usuario/" + usuarioId;
