@@ -6,11 +6,13 @@ import com.Catalogo.Catalogo.modelo.Recurso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/catalogo")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CatalogoController {
 
     private CatalogoService catService;
