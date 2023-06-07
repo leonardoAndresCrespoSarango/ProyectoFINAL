@@ -78,4 +78,10 @@ public class RecursoController {
         }
         return ResponseEntity.ok(recursos);
     }
+
+    @PostMapping
+    public ResponseEntity<Recurso> guardarRecurso(@RequestBody Recurso recurso){
+        Recurso nuevoRecurso = recService.save(recurso);
+        return ResponseEntity.ok(nuevoRecurso);
+    }
 }

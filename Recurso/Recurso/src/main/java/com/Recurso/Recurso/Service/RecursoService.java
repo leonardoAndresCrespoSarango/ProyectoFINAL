@@ -72,6 +72,11 @@ public class RecursoService {
                 .getResultList();
     }
 
+    public Recurso save(Recurso recurso) {
+        entityManager.persist(recurso);
+        return recurso;
+    }
+
 
 
 }

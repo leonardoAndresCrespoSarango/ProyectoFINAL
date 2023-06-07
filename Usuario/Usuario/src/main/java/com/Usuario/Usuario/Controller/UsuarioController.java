@@ -1,9 +1,8 @@
 package com.Usuario.Usuario.Controller;
-
 import com.Usuario.Usuario.Entity.Usuario;
-
 import com.Usuario.Usuario.Service.UsuarioService;
 import com.Usuario.Usuario.modelo.Recurso;
+import com.Usuario.Usuario.feignclients.RecursoFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +14,16 @@ import java.util.List;
 public class UsuarioController {
 
     private UsuarioService usuService;
+    private RecursoFeignClient recursoFeignClient;
 
     @Autowired
-    public UsuarioController(UsuarioService usuService) {
+    public UsuarioController(UsuarioService usuService, RecursoFeignClient recursoFeignClient) {
         this.usuService = usuService;
+        this.recursoFeignClient = recursoFeignClient;
     }
 
     @GetMapping("/todos")
     public List<Usuario> obtenerTodosLosItems() {
-
         return usuService.getListaTodo();
     }
 
@@ -62,14 +62,25 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/usu/{usu}")
+    public ResponseEntity<Usuario> buscarUsu(@PathVariable("usu") String usu) {
+        Usuario usuarioEncontrado = usuService.buscarPorUsuario(usu);
+        if (usuarioEncontrado != null) {
+            return ResponseEntity.ok(usuarioEncontrado);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    ////AQUI VAN LOS ENLACES DE MICROSERVICIOS
     @GetMapping("/recursos/{usuarioId}")
     public ResponseEntity<List<Recurso>> obtenerRecursosUsuario(@PathVariable("usuarioId") int usuarioId) {
         List<Recurso> recursos = usuService.getRecursos(usuarioId);
         return ResponseEntity.ok(recursos);
     }
 
-
-
+    @PostMapping("/recurso/{usuarioId}")
+    public ResponseEntity<Recurso> guardarRecurso(@PathVariable("usuarioId") int usuarioId, @RequestBody Recurso recurso) {
+        Recurso nuevoRecurso = usuService.saveRecurso(usuarioId, recurso);
+        return ResponseEntity.ok(nuevoRecurso);
+    }
 }

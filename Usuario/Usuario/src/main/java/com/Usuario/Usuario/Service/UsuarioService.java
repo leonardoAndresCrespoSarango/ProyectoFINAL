@@ -2,6 +2,8 @@ package com.Usuario.Usuario.Service;
 
 import com.Usuario.Usuario.Entity.Usuario;
 import com.Usuario.Usuario.modelo.Recurso;
+import com.Usuario.Usuario.feignclients.RecursoFeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,11 @@ import java.util.List;
 public class UsuarioService {
     private final RestTemplate restTemplate;
 
+    @Autowired
+    private RecursoFeignClient recursoFeignClient;
     @PersistenceContext
     private EntityManager entityManager;
+
 
     public UsuarioService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -68,6 +73,8 @@ public class UsuarioService {
         return entityManager.find(Usuario.class, id);
     }
 
+
+
     public Usuario buscarPorUsuario(String usu) {
         String jpql = "SELECT u FROM Usuario u WHERE u.usu = :usu";
         Query query = entityManager.createQuery(jpql, Usuario.class);
@@ -90,5 +97,12 @@ public class UsuarioService {
         List<Recurso> recursos = response.getBody();
         return recursos;
     }
+
+    public Recurso saveRecurso(int usuarioId, Recurso recurso) {
+        recurso.setUsuarioId(usuarioId);
+        Recurso nuevoRecurso = recursoFeignClient.save(recurso);
+        return nuevoRecurso;
+    }
+
 
 }

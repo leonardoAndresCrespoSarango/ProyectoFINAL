@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 //@RequestMapping("/recursos")
 public interface RecursoFeignClient {
 
-    @PostMapping()
+    @PostMapping
     Recurso save(@RequestBody Recurso recurso);
 
     @GetMapping("/usuario/{usuarioId}")
